@@ -10,7 +10,7 @@ apt-key add nginx_signing.key
 apt-get update
 apt-get install -fy nginx
 apt-get install -fy php5-fpm php5-cli php5-mysql
-apt-get install -fy php-apc
+apt-get install -fy php-apc php5-gd
 # substituir todos os locais onde aparece o usuário www-data pelo usuário nginx no arquivo /etc/php5/fpm/pool.d/www.conf
 sed -i 's/www-data/nginx/g' /etc/php5/fpm/pool.d/www.conf
 service php5-fpm restart
