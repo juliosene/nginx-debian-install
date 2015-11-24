@@ -1,4 +1,4 @@
-This script install Nginx + PHP on Debian Linux distributions.
+Install: Nginx + PHP on Debian Linux distributions.
 
 Run this script before make any changes on your Debian instalation. 
 
