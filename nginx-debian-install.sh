@@ -1,11 +1,13 @@
 #!/bin/bash
+# Install Nginx + php-fpm + apc cache for Ubuntu and Debian distributions
 apt-get update
 apt-get -fy dist-upgrade
 apt-get -fy upgrade
 REL=`lsb_release -sc`
+DISTRO=`lsb_release -is | tr [:upper:] [:lower:]`
 wget http://nginx.org/keys/nginx_signing.key
-echo "deb http://nginx.org/packages/debian/ $REL nginx" >> /etc/apt/sources.list
-echo "deb-src http://nginx.org/packages/debian/ $REL nginx" >> /etc/apt/sources.list
+echo "deb http://nginx.org/packages/$DISTRO/ $REL nginx" >> /etc/apt/sources.list
+echo "deb-src http://nginx.org/packages/$DISTRO/ $REL nginx" >> /etc/apt/sources.list
 apt-key add nginx_signing.key
 apt-get update
 apt-get install -fy nginx
