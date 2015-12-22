@@ -1,5 +1,6 @@
 #!/bin/bash
 # Install Nginx + php-fpm + apc cache for Ubuntu and Debian distributions
+cd ~
 apt-get update
 apt-get -fy dist-upgrade
 apt-get -fy upgrade
