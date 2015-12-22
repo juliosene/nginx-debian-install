@@ -38,7 +38,9 @@ server {
         root /usr/share/nginx/html;
         ## This should be in your http block and if it is, it`s not needed here.
         index index.htm index.html index.php;
- 
+  	gzip on;
+	gzip_types text/css text/x-component application/x-javascript application/javascript text/javascript text/x-js text/richtext image/svg+xml text/plain text/xsd text/xsl text/xml image/x-icon;
+
         location = /favicon.ico {
                 log_not_found off;
                 access_log off;
@@ -55,7 +57,6 @@ server {
                 # include the "?$args" part so non-default permalinks doesn`t break when using query string
                 try_files $uri $uri/ /index.php?$args;
         }
- 
         location ~ \.php$ {
                 #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
 #	    	root           html;
@@ -68,7 +69,9 @@ server {
                 fastcgi_intercept_errors on;
                 fastcgi_pass php;
         }
- 
+	location ~ \.(ttf|ttc|otf|eot|woff|font.css)$ {
+   		add_header Access-Control-Allow-Origin "*";
+	}
         location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
                 expires max;
                 log_not_found off;
