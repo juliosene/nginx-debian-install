@@ -4,9 +4,12 @@ cd ~
 apt-get update
 apt-get -fy dist-upgrade
 apt-get -fy upgrade
-apt-get install lsb-release
+apt-get install lsb-release bc
 REL=`lsb_release -sc`
 DISTRO=`lsb_release -is | tr [:upper:] [:lower:]`
+NCORES=` cat /proc/cpuinfo | grep cores | wc -l`
+WORKER=`bc -l <<< "4*$NCORES"`
+
 wget http://nginx.org/keys/nginx_signing.key
 echo "deb http://nginx.org/packages/$DISTRO/ $REL nginx" >> /etc/apt/sources.list
 echo "deb-src http://nginx.org/packages/$DISTRO/ $REL nginx" >> /etc/apt/sources.list
@@ -21,6 +24,59 @@ service php5-fpm restart
 # backup default Nginx configuration
 mkdir /etc/nginx/conf-bkp
 cp /etc/nginx/conf.d/default.conf /etc/nginx/conf-bkp/default.conf
+cp /etc/nginx/nginx.conf /etc/nginx/nginx-conf.old
+#
+# Replace nginx.conf
+#
+echo -e "user nginx www-data;\nworker_processes $WORKER;" > /etc/nginx/nginx.conf
+echo -e 'pid /var/run/nginx.pid;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+http {
+# Basic Settings
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 5;
+        types_hash_max_size 2048;
+        # server_tokens off;
+
+        # server_names_hash_bucket_size 64;
+        # server_name_in_redirect off;
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+# Logging Settings
+log_format gzip '$remote_addr - $remote_user [$time_local]  '
+                '"$request" $status $bytes_sent '
+                '"$http_referer" "$http_user_agent" "$gzip_ratio"';
+
+        access_log /var/log/nginx/access.log gzip buffer=32k;
+        error_log /var/log/nginx/error.log notice;
+
+# Gzip Settings
+        gzip on;
+        gzip_disable "msie6";
+
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 6;
+        gzip_buffers 16 8k;
+        gzip_http_version 1.1;
+        gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss t
+ext/javascript;
+
+# Virtual Host Configs
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+
+}' >> /etc/nginx/nginx.conf
+
 # replace Nginx default.conf
 #
 echo -e '# Upstream to abstract backend connection(s) for php
