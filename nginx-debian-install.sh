@@ -140,7 +140,7 @@ server {
 # Memcache client installation
 apt-get install -fy php-pear
 apt-get install -fy php5-dev
-printf "\n" |pecl install -fy memcache
+printf "\n" |pecl install -f memcache
 echo -e '
 ; /etc/php.d/memcache.ini
 
