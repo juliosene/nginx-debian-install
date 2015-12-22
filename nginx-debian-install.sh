@@ -4,6 +4,7 @@ cd ~
 apt-get update
 apt-get -fy dist-upgrade
 apt-get -fy upgrade
+apt-get install lsb-release
 REL=`lsb_release -sc`
 DISTRO=`lsb_release -is | tr [:upper:] [:lower:]`
 wget http://nginx.org/keys/nginx_signing.key
