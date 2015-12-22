@@ -77,6 +77,26 @@ server {
                 log_not_found off;
         }
 }' > /etc/nginx/conf.d/default.conf
+
+# Memcache client installation
+apt-get install -fy php-pear
+apt-get install -fy php5-dev
+printf "\n" |pecl install -fy memcache
+echo -e '
+; /etc/php.d/memcache.ini
+
+extension = memcache.so
+
+memcache.allow_failover = 1
+memcache.max_failover_attempts = 20
+memcache.chunk_size = 32768
+memcache.default_port = 11211
+memcache.hash_strategy = standard
+memcache.hash_function = crc32
+' > /etc/php5/mods-available/memcache.ini
+ ln -s /etc/php5/mods-available/memcache.ini  /etc/php5/fpm/conf.d/20-memcache.ini
+
+# Service restart
 #
 service php5-fpm restart
 service nginx restart
