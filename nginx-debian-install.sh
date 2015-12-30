@@ -155,6 +155,11 @@ memcache.hash_function = crc32
 ' > /etc/php5/mods-available/memcache.ini
  ln -s /etc/php5/mods-available/memcache.ini  /etc/php5/fpm/conf.d/20-memcache.ini
 #
+# Edit default page to show php info
+#
+mv /usr/share/nginx/html/index.html /usr/share/nginx/html/index.php
+echo -e "\n<?php\nphpinfo();\n?>" >> /usr/share/nginx/html/index.php
+#
 # Services restart
 #
 service php5-fpm restart
